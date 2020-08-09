@@ -1,0 +1,241 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{macros}
+
+\RequirePackage{amsmath,amsthm,amsfonts,amssymb,color,inconsolata,listings}
+\RequirePackage[all]{xy}
+\RequirePackage{graphicx}
+% \RequirePackage[margin=1.2in]{geometry}
+\RequirePackage{hyperref}
+\RequirePackage{comment}
+\RequirePackage{bm}
+\RequirePackage{algpseudocode,algorithm,algorithmicx}
+% \RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{booktabs}
+\RequirePackage{natbib}
+\RequirePackage{bbm}
+\RequirePackage{etoolbox}
+
+\RequirePackage{fancyhdr}
+
+\RequirePackage[capitalise, nameinlink, noabbrev]{cleveref}
+\RequirePackage{setspace}
+
+\makeatletter
+
+% make numeric styles use name format
+\patchcmd{\NAT@test}{\else \NAT@nm}{\else \NAT@nmfmt{\NAT@nm}}{}{}
+
+% define \citepos just like \citet
+\DeclareRobustCommand\citepos
+  {\begingroup
+   \let\NAT@nmfmt\NAT@posfmt% ...except with a different name format
+   \NAT@swafalse\let\NAT@ctype\z@\NAT@partrue
+   \@ifstar{\NAT@fulltrue\NAT@citetp}{\NAT@fullfalse\NAT@citetp}}
+
+\let\NAT@orig@nmfmt\NAT@nmfmt
+\def\NAT@posfmt#1{\NAT@orig@nmfmt{#1's}}
+
+\makeatother
+
+
+\definecolor{gq}{HTML}{1F4788}
+\DeclareOption{thm}{
+    \theoremstyle{definition}
+    \newtheorem{theorem}{Theorem}
+    \newtheorem{prop}[theorem]{Proposition}
+    \newtheorem{defn}[theorem]{Definition}
+    \newtheorem{lemma}[theorem]{Lemma}
+    \newtheorem{cor}[theorem]{Corollary}
+    \newtheorem{ex}[theorem]{Example}
+    \newtheorem{fact}[theorem]{Fact}
+    \newtheorem{conj}[theorem]{Conjecture}
+}
+
+\DeclareOption{thm_section}{
+    \theoremstyle{definition}
+    \newtheorem{theorem}{Theorem}[section]
+    \newtheorem{prop}[theorem]{Proposition}
+    \newtheorem{defn}[theorem]{Definition}
+    \newtheorem{lemma}[theorem]{Lemma}
+    \newtheorem{cor}[theorem]{Corollary}
+    \newtheorem{ex}[theorem]{Example}
+    \newtheorem{fact}[theorem]{Fact}
+}
+
+\DeclareOption{thm*}{
+    \theoremstyle{definition}
+    \newtheorem*{theorem}{Theorem}
+    \newtheorem*{prop}{Proposition}
+    \newtheorem*{defn}{Definition}
+    \newtheorem*{lemma}{Lemma}
+    \newtheorem*{cor}{Corollary}
+    \newtheorem*{ex}{Example}
+    \newtheorem*{fact}{Fact}
+}
+
+
+
+\theoremstyle{remark}
+\newtheorem*{rmk}{Remark}
+
+\theoremstyle{definition}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{prop*}{Proposition}
+\newtheorem*{defn*}{Definition}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{cor*}{Corollary}
+\newtheorem*{ex*}{Example}
+\newtheorem*{fact*}{Fact}
+
+\ProcessOptions
+\ExecuteOptions{}
+
+% \onehalfspacing
+
+% TODO
+\hypersetup{colorlinks=true, citecolor=Blue, linkcolor=Brown}
+
+
+% Statistics
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\var}{\mathbb{V}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\cov}{\operatorname{Cov}}
+\newcommand{\corr}{\operatorname{Corr}}
+\newcommand{\Bern}{\operatorname{Bern}}
+\newcommand{\Unif}{\operatorname{Unif}}
+\newcommand{\Bin}{\operatorname{Bin}}
+\newcommand{\Expo}{\operatorname{Expo}}
+\newcommand{\Pois}{\operatorname{Pois}}
+\newcommand{\Gammadist}{\operatorname{Gamma}}
+\newcommand{\Logistic}{\operatorname{Logistic}}
+\newcommand{\Laplace}{\operatorname{Laplace}}
+\newcommand{\NBin}{\operatorname{NBin}}
+% \newcommand{\Beta}{\operatorname{Beta}}
+\newcommand{\Geom}{\operatorname{Geom}}
+\newcommand{\Dir}{\operatorname{Dir}}
+\newcommand{\FS}{\operatorname{FS}}
+\newcommand{\Norm}{\mathcal{N}}
+\newcommand{\B}{\mathcal{B}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\Mult}{\operatorname{Mult}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\pto}{\overset{p}{\longrightarrow}}
+\newcommand{\dto}{\overset{d}{\longrightarrow}}
+\newcommand{\asto}{\overset{a.s.}{\longrightarrow}}
+\newcommand{\iid}{\overset{\mathrm{i.i.d.}}{\sim}}
+
+\DeclareSymbolFont{symbolsC}{U}{txsyc}{m}{n}
+\DeclareMathSymbol{\indep}{\mathrel}{symbolsC}{121}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+% \newcommand{\C}{\mathbb{C}}
+
+
+\newcount\colveccount
+\newcommand*\colvec[1]{
+        \global\colveccount#1
+        \begin{pmatrix}
+        \colvecnext
+}
+\def\colvecnext#1{
+        #1
+        \global\advance\colveccount-1
+        \ifnum\colveccount>0
+                \\
+                \expandafter\colvecnext
+        \else
+                \end{pmatrix}
+        \fi
+}
+
+\newcommand*\colvecb[1]{
+        \global\colveccount#1
+        \begin{bmatrix}
+        \colvecbnext
+}
+\def\colvecbnext#1{
+        #1
+        \global\advance\colveccount-1
+        \ifnum\colveccount>0
+                \\
+                \expandafter\colvecbnext
+        \else
+                \end{bmatrix}
+        \fi
+}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\inprod}[1]{\left\langle {#1} \right \rangle}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\diag}{\operatorname{diag}}
+
+\newcommand{\diff}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\parens}[1]{\left({#1}\right)}
+\newcommand{\pr}{\parens}
+\newcommand{\prr}{\parens}
+\newcommand{\bk}[1]{\left[{#1}\right]}
+\newcommand{\br}[1]{\left\{{#1}\right\}}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\ip}[1]{\langle #1 \rangle}
+\newcommand{\thinhat}{\hat}
+\renewcommand{\hat}{\widehat}
+\renewcommand{\bar}{\overline}
+\newcommand{\tr}{\operatorname{tr}} % trace
+
+\newcommand{\nrm}[2]{#1\lVert{#2}#1\rVert}
+
+\newcommand{\bhat}[1]{\hat {\bm {#1}}}
+\newcommand{\btilde}[1]{\tilde {\bm {#1}}}
+\newcommand{\bbar}[1]{\bar {\bm {#1}}}
+
+\newcommand{\T}{\mathcal T}
+\newcommand{\uppr}[1]{^{(#1)}}
+\newcommand{\one}{\mathbbm{1}}
+
+\newcommand{\TODO}[1]{
+{\color{red}\textbf{[TODO: #1]}}}
+
+
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max} % thin space, limits underneath in displays
+
+\newenvironment{sol}{\color{gq}\begin{proof}[Solution]}
+{\end{proof}}
+
+\definecolor{string}{HTML}{BA2121}
+\definecolor{cmt}{HTML}{408080}
+\definecolor{key}{HTML}{008000}
+\definecolor{bg}{HTML}{FAFAFA}
+\lstset{
+  backgroundcolor=\color{bg},
+  language=Python,
+  numbers=left,
+  numberstyle=\footnotesize\ttfamily,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  commentstyle=\color{cmt},
+  keywordstyle=\bfseries\color{key},
+  stringstyle=\color{string},
+  columns=fullflexible,
+  basicstyle=\linespread{.85}\ttfamily\color{black}\footnotesize,
+  moredelim=[il][\textcolor{pgrey}]{$$},
+  moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%},
+}
+
+\newcommand{\paragraphdot}[1]{\paragraph{{#1.}}}
+
+
+\endinput
